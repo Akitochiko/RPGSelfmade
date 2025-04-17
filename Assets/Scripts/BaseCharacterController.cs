@@ -7,6 +7,7 @@ using static UnityEngine.InputSystem.InputAction;
 public class BaseCharacterController : MonoBehaviour
 {
     private Vector2 movementInput;
+<<<<<<< HEAD
     [SerializeField] private float movementSpeed;
     [Range(0,1)][SerializeField] private float slowedFactor;
     private bool isSlowes;
@@ -56,5 +57,19 @@ public class BaseCharacterController : MonoBehaviour
         {
             isSlowes = false;
         }
+=======
+    [SerializeField] float movementSpeed;
+    public void Movement(CallbackContext ctx)
+    {
+        //Debug.Log($"Context: {ctx.ReadValue<Vector2>()}");7
+
+        movementInput = ctx.ReadValue<Vector2>();
+>>>>>>> origin/master
     }
+
+    private void Update()
+    {
+        transform.position += new Vector3(movementInput.x, movementInput.y, 0) * Time.deltaTime * movementSpeed;
+    }
+
 }
