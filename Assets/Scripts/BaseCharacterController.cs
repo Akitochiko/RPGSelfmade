@@ -8,11 +8,12 @@ public class BaseCharacterController : MonoBehaviour
 {
     private Vector2 movementInput;
     [SerializeField] private float movementSpeed;
-    private Rigidbody2D rb;
+    [Range(0,1)][SerializeField] private float slowedFactor;
+    private bool isSlowes;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        isSlowes = false;
     }
 
     /// <summary>
@@ -28,17 +29,32 @@ public class BaseCharacterController : MonoBehaviour
     //This is now a FIXEDupdate
     private void FixedUpdate()
     {
+        var actualMovementSpeed = movementSpeed;
+        if (isSlowes) actualMovementSpeed *= slowedFactor;
+        
+
         //transform.position += new Vector3(movementInput.x, movementInput.y, 0) * Time.deltaTime * movementSpeed;
 
-        transform.Translate(new Vector3(movementInput.x, movementInput.y, 0) * Time.deltaTime * movementSpeed);
+        transform.Translate(new Vector3(movementInput.x, movementInput.y, 0) * Time.deltaTime * actualMovementSpeed);
 
         //rb.velocity = new Vector3(movementInput.x, movementInput.y, 0) * movementSpeed;
 
         //rb.AddForce(new Vector3(movementInput.x, movementInput.y, 0) * movementSpeed);
     }
 
-    public void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerStay2D(Collider2D col)
     {
-        Debug.Log("Collison detetected with " + collision.gameObject.name);
+        if (col.gameObject.CompareTag("Swamp"))
+        {
+            isSlowes = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.gameObject.CompareTag("Swamp"))
+        {
+            isSlowes = false;
+        }
     }
 }
